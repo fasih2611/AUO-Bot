@@ -1,4 +1,4 @@
-const { SlashCommandBuilder,EmbedBuilder,ActionRowBuilder, ButtonBuilder, ButtonStyle,CommandInteractionOptionResolver,MessageComponentInteraction  } = require('discord.js');
+const { SlashCommandBuilder,EmbedBuilder,ActionRowBuilder, ButtonBuilder, ButtonStyle,CommandInteractionOptionResolver,MessageComponentInteraction, Message  } = require('discord.js');
 const ServantData = require('./Data.json');
 
 function GetServantArt(name){
@@ -23,13 +23,10 @@ module.exports = {
         
 
 	async execute(interaction) {
-        if (!interaction.isChatInputCommand()) return;
+        if (!interaction.isChatInputCommand() && !interaction.isButton()) return;
+
 		try{
-			if (interaction.isButton()){
-				console.log('pog');
-				return
-			}
-		
+			
 			var art_index = 0
 			const row = new ActionRowBuilder()
 				.addComponents(
@@ -46,6 +43,7 @@ module.exports = {
 				Servantinfo = GetServantArt(name.charAt(0).toUpperCase() + name.slice(1))
 				art = Servantinfo['art']
 				const embed = new EmbedBuilder()
+				.addFields({ name: 'Traits', value: Servantinfo['Traits'], inline: true })
 				.setColor(0x0099FF)
 				.setTitle(Servantinfo['AKA'].substr(Servantinfo['AKA'].lastIndexOf(',')+1,Servantinfo['AKA'].length))
 				.setImage(art[art_index]+'.jpg')
@@ -56,23 +54,38 @@ module.exports = {
 				
 			await interaction.reply({ embeds: [embed], components: [row] });
 			
-				// if(interaction)
+			const filter = i => (i.customId === 'forward' || i.customId === 'backward') && i.user.id === interaction.user.id;
 
-				// if(art.length-1<art_index) art_index=0
-				// if(art_index<0) art_index=art.length-1
+			const collector = interaction.channel.createMessageComponentCollector({ filter, time: 15000,max: "30" });
+
+			collector.on('collect', async i => {
 				
-				// const new_embed = new EmbedBuilder()
-				// .setColor(0x0099FF)
-				// .setTitle(Servantinfo['AKA'].substr(Servantinfo['AKA'].lastIndexOf(',')+1,Servantinfo['AKA'].length))
-				// .setImage(art[art_index]+'.jpg')
-				// .setDescription('Voice Actor: '+Servantinfo['Voice Actor']+'\n'+'Illustrator: '+Servantinfo['Illustrator']+
-				// '\n'+'Alignments: '+Servantinfo['Alignments'])
-				// .setFooter({ text: 'Id: '+Servantinfo['ID']});
-				// interaction.update({embeds: [new_embed]})
+				if(i.customId=='forward') ++art_index;
+				if(i.customId=='backward') --art_index;
+				if(art.length-1<art_index) art_index=0;
+				if(art_index<0) art_index=art.length-1;
+				
+				const new_embed = new EmbedBuilder()
+				.setColor(0x0099FF)
+				.setTitle(Servantinfo['AKA'].substr(Servantinfo['AKA'].lastIndexOf(',')+1,Servantinfo['AKA'].length))
+				.setImage(art[art_index]+'.jpg')
+				.addFields({ name: 'Traits', value: Servantinfo['Traits'], inline: true })
+				.setDescription('Voice Actor: '+Servantinfo['Voice Actor']+'\n'+'Illustrator: '+Servantinfo['Illustrator']+
+				'\n'+'Alignments: '+Servantinfo['Alignments'])
+				.setFooter({ text: 'Id: '+Servantinfo['ID']});
+
+				await i.update({embeds: [new_embed]})
+			});
+			collector.on("end",async () => {
+				interaction.editReply({components:[]})
+			});
+
+			
 			}
+
+
 		catch{
 			await interaction.reply({content:'Invalid Input'})
 		}
 	},
-
 };
