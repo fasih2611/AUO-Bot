@@ -1,5 +1,3 @@
-# -- coding: UTF-8 --
-from turtle import title
 from bs4 import BeautifulSoup
 import requests
 import json
@@ -14,10 +12,40 @@ def GetSkill(Skills):
             return arr
         arr.append(skill)
         i = i + 1
+def npformat(np_info):
+    np_info = np_info[2:]
+    try:
+        np_text = {
+        'base':np_info[0],
+        'rank': np_info[np_info.index('Rank')] +' '+np_info[np_info.index('Rank')+2],
+        'type': np_info[np_info.index('Noble Phantasm Type')] + ' '+np_info[np_info.index('Noble Phantasm Type')+2],
+        'Hits': np_info[np_info.index('Hits')] + ' '+np_info[np_info.index('Hits')+2],
+        'Scaling': np_info[np_info.index('Damage +'):np_info.index('Damage +')+6],
+        
+    }
+    except:
+        np_text = {
+        'base':np_info[0],
+        'rank': np_info[np_info.index('Rank')] +' '+np_info[np_info.index('Rank')+2],
+        'type': np_info[np_info.index('Noble Phantasm Type')] + ' '+np_info[np_info.index('Noble Phantasm Type')+2],
+        'Hits':'Support NP',
+        'Scaling': np_info[np_info.index('NP Level')+6:np_info.index('NP Level')+12],
+    }
+        
+    
+    upgradeindex = [np_info.index(i) for i in np_info if 'Upgrade' in i]
+    if len(upgradeindex) != 0:
+        np_text['Overcharge Effect'] = np_info[np_info.index('Overcharge Effect'):upgradeindex[0]]
+        np_text['Upgrade'] = npformat(np_info[upgradeindex[0]:])
+    else:
+        np_text['Overcharge Effect'] = np_info[np_info.index('Overcharge Effect'):]
+
+    return np_text
 
 
 def GetServant(url):
     html_text = requests.get('https://fategrandorder.fandom.com/wiki/'+url)
+    print(url)
     soup = BeautifulSoup(html_text.text,'lxml')
 
     #retriving stats
@@ -60,7 +88,27 @@ def GetServant(url):
         i = i+1
 
     servantlist[int(servantdic["ID"])]['skills'] = AllSkills
+    
+    #getting noble phantasms
+    if url == 'Beast_IV':
+        servantlist[int(servantdic["ID"])]['NP'] = 'None'
+        return servantlist
+        
+    np = soup.find('h2',text ='Noble Phantasm').find_next('div',class_='tabber wds-tabber')
+    np_name = np.caption.b.text
+    np_ftext = np.caption.b.find_next('b').text
+    np_text = {'name':np_name,'ftext':np_ftext}
+    np_info = []
+    for text in np.text.splitlines():
+        if text != '':
+            np_info.append(text.strip())
+    if 'Old' in np_info[len(np_info)-1] or 'Costume' in np_info[len(np_info)-1] or 'Stage 1' in np_info[len(np_info)-1]:
+        np_info.pop()
+    np_text.update(npformat(np_info))    
+        
+    servantlist[int(servantdic["ID"])]['NP'] =np_text
     return servantlist
+
 
 def GetList():
     html_text = requests.get('https://fategrandorder.fandom.com/wiki/Servant_List_by_ID#1_~_100')
@@ -79,6 +127,7 @@ def GetList():
     output = output.replace('\n\n','\n').replace('\n\n','\n').splitlines()
     return output
 
+
 ServantList = GetList()
 completelist = {}
 i=1
@@ -93,8 +142,5 @@ for servant in ServantList:
     except:
         completelist[i]['AKA'] = servant.replace('_',' ')
     i = i + 1
-    print(i)
 with open('.\\Data\\Data.json','w') as file:
     json.dump(completelist,file,indent = 4)
-
-#print(GetServant())
