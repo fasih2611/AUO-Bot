@@ -20,19 +20,20 @@ def npformat(np_info):
         'rank': np_info[np_info.index('Rank')] +' '+np_info[np_info.index('Rank')+2],
         'type': np_info[np_info.index('Noble Phantasm Type')] + ' '+np_info[np_info.index('Noble Phantasm Type')+2],
         'Hits': np_info[np_info.index('Hits')] + ' '+np_info[np_info.index('Hits')+2],
-        'Scaling': np_info[np_info.index('Damage +'):np_info.index('Damage +')+6],
+        'Scaling': np_info[np_info.index('NP Level')+6:np_info.index('NP Level')+12],
+        'Effect': np_info[np_info.index('Effect'):np_info.index('Effect')+2]
         
     }
     except:
         np_text = {
         'base':np_info[0],
-        'rank': np_info[np_info.index('Rank')] +' '+np_info[np_info.index('Rank')+2],
-        'type': np_info[np_info.index('Noble Phantasm Type')] + ' '+np_info[np_info.index('Noble Phantasm Type')+2],
+        'rank': np_info[np_info.index('Rank')] +' '+np_info[np_info.index('Rank')+3],
+        'type': np_info[np_info.index('Noble Phantasm Type')] + ' '+np_info[np_info.index('Noble Phantasm Type')+3],
         'Hits':'Support NP',
         'Scaling': np_info[np_info.index('NP Level')+6:np_info.index('NP Level')+12],
+        'Effect': np_info[np_info.index('Effect'):np_info.index('Effect')+2]
     }
         
-    
     upgradeindex = [np_info.index(i) for i in np_info if 'Upgrade' in i]
     if len(upgradeindex) != 0:
         np_text['Overcharge Effect'] = np_info[np_info.index('Overcharge Effect'):upgradeindex[0]]
