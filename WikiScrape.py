@@ -20,7 +20,7 @@ def npformat(np_info):
         'rank': np_info[np_info.index('Rank')] +' '+np_info[np_info.index('Rank')+2],
         'type': np_info[np_info.index('Noble Phantasm Type')] + ' '+np_info[np_info.index('Noble Phantasm Type')+2],
         'Hits': np_info[np_info.index('Hits')] + ' '+np_info[np_info.index('Hits')+2],
-        'Scaling': np_info[np_info.index('NP Level')+6:np_info.index('NP Level')+12],
+        'Scaling': np_info[np_info.index('NP Level')+6:np_info.index('Overcharge Effect')],
         'Effect': np_info[np_info.index('Effect'):np_info.index('Effect')+2]
         
     }
@@ -30,7 +30,7 @@ def npformat(np_info):
         'rank': np_info[np_info.index('Rank')] +' '+np_info[np_info.index('Rank')+3],
         'type': np_info[np_info.index('Noble Phantasm Type')] + ' '+np_info[np_info.index('Noble Phantasm Type')+3],
         'Hits':'Support NP',
-        'Scaling': np_info[np_info.index('NP Level')+6:np_info.index('NP Level')+12],
+        'Scaling': np_info[np_info.index('NP Level')+6:np_info.index('Overcharge Effect')],
         'Effect': np_info[np_info.index('Effect'):np_info.index('Effect')+2]
     }
         
@@ -103,7 +103,7 @@ def GetServant(url):
     for text in np.text.splitlines():
         if text != '':
             np_info.append(text.strip())
-    if 'Old' in np_info[len(np_info)-1] or 'Costume' in np_info[len(np_info)-1] or 'Stage 1' in np_info[len(np_info)-1]:
+    if 'Old' in np_info[len(np_info)-1] or 'Costume' in np_info[len(np_info)-1] or 'Stage' in np_info[len(np_info)-1]:
         np_info.pop()
     np_text.update(npformat(np_info))    
         

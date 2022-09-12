@@ -3,7 +3,7 @@ const ServantData = require('./Data.json');
 
 function GetServant(name){
 	let len = 361;
-    for(let i =1;i<len;i++){
+    for(let i =1;i<=len;i++){
         if(ServantData[i]['AKA'].includes(name)){
             return ServantData[i]
         }
@@ -14,7 +14,7 @@ function GetServant(name){
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('art')
-		.setDescription('Gives the ascension art for a specified servant!')
+		.setDescription('Gives the Noble Phantasm for specified servant!')
         .addStringOption(option=>
             option.setName('servant-name')
             .setDescription('The name of the desired servant')

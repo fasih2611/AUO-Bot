@@ -3,7 +3,7 @@ const ServantData = require('./Data.json');
 
 function GetServant(name){
 	let len = 361;
-    for(let i =1;i<len;i++){
+    for(let i =1;i<=len;i++){
         if(ServantData[i]['AKA'].includes(name)){
             return ServantData[i];
         }
