@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
 from bs4 import BeautifulSoup
 import requests
 import json
@@ -440,5 +438,4 @@ for servant in ServantList:
         completelist[i]['AKA'] = servant.replace('_',' ')
     i = i + 1
 with open('.\\Data\\Data.json','w') as file:
->>>>>>> ab8c15965f3c1e09ea27eacdbba5d64faa4b5b3a
     json.dump(completelist,file,indent = 4)
