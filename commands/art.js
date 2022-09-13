@@ -2,12 +2,13 @@ const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, Butt
 const ServantData = require('./Data.json');
 
 function GetServant(name) {
-  let len = 361;
-  for (let i = 1; i <= len; i++) {
-    if (ServantData[i]['AKA'].includes(name)) {
-      return ServantData[i]
-    }
-  }
+	let len = 361;
+	var regex = new RegExp(`([, ]|)(${name})([, ]|$)`);
+	for (let i = 1; i <= len; i++) {
+	  if (regex.test(ServantData[i]['AKA'])) {
+		return ServantData[i]
+	}
+		}
 }
 
 
@@ -39,7 +40,7 @@ module.exports = {
             .setStyle(ButtonStyle.Primary)
         );
       let name = interaction.options.getString('servant-name')
-      Servantinfo = GetServant(name.charAt(0).toUpperCase() + name.slice(1))
+      Servantinfo = getServant(name.charAt(0).toUpperCase() + name.slice(1))
       art = Servantinfo['art']
       const embed = new EmbedBuilder()
         .addFields({ name: 'Traits', value: Servantinfo['Traits'], inline: true })
@@ -79,7 +80,8 @@ module.exports = {
         await interaction.editReply({ components: [] })
       });
     }
-    catch {
+    catch(err) {
+      console.log(err);
       await interaction.reply({ content: 'Invalid Input' })
     }
   },

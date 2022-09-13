@@ -1,13 +1,14 @@
 const { SlashCommandBuilder,EmbedBuilder,ActionRowBuilder, ButtonBuilder, ButtonStyle,CommandInteractionOptionResolver,MessageComponentInteraction, Message  } = require('discord.js');
 const ServantData = require('./Data.json');
 
-function GetServant(name){
+function GetServant(name) {
 	let len = 361;
-    for(let i =1;i<=len;i++){
-        if(ServantData[i]['AKA'].includes(name)){
-            return ServantData[i];
-        }
-    }
+	var regex = new RegExp(`([, ]|)(${name})([, ]|$)`);
+	for (let i = 1; i <= len; i++) {
+	  if (regex.test(ServantData[i]['AKA'])) {
+		return ServantData[i]
+	}
+		}
 }
 function Npformat(np){
     output = "";
