@@ -38,7 +38,7 @@ function Npformat(np){
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('np')
-		.setDescription('Gives the skills of the specified Servant!')
+		.setDescription('Gives the Noble Phantasm of the specified Servant!')
         .addStringOption(option=>
             option.setName('servant-name')
             .setDescription('The name of the desired servant')
