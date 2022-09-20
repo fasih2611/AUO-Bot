@@ -13,20 +13,21 @@ function GetServant(name) {
 function Skillformat(skill){
     let output = "";
     for(const word of skill){
-        if (Array.isArray(word) && word.length >5){
+        if (Array.isArray(word) && word.length >5){ //For Upgrades, .length to prevent cooldowns from being included
             output += '\n';
             output += Skillformat(word);
             continue;
         }
-        if(/\d/.test(word[0])) {output += word+" ";continue;}
+        if(/\d/.test(word[0])) {output += word+" ";continue;} //For skill magnitudes
         if(Array.isArray(word)){
             output += '\n';
             for(const cooldown of word){
-                output += cooldown + " "
+                output += cooldown + " " //for cooldowns
             }
             output += '\n';
             continue;
         }
+		if(word == skill[2]){output +=`\n**${word}**`;continue;}
         output += '\n';
         output += word
         

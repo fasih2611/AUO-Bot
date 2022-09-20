@@ -40,7 +40,7 @@ module.exports = {
             .setStyle(ButtonStyle.Primary)
         );
       let name = interaction.options.getString('servant-name')
-      Servantinfo = getServant(name.charAt(0).toUpperCase() + name.slice(1))
+      Servantinfo = GetServant(name.charAt(0).toUpperCase() + name.slice(1))
       art = Servantinfo['art']
       const embed = new EmbedBuilder()
         .addFields({ name: 'Traits', value: Servantinfo['Traits'], inline: true })
